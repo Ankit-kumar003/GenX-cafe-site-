@@ -42,16 +42,21 @@
       <div class="col-lg-3 col-md-4 col-sm-6 menu-item-col" data-category="{{ item.category }}">
         <div class="menu-card h-100">
           <div class="menu-img-wrap">
-            <img src="{{ url_for('uploaded_file', filename=item.image) if item.image != 'default.jpg' else url_for('static', filename='images/default-food.jpg') }}"
-                 onerror="
-                   let cat = '{{ item.category | lower }}';
-                   if(cat.includes('pizza')) this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80';
-                   else if(cat.includes('burger')) this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80';
-                   else if(cat.includes('coffee') || cat.includes('beverage') || cat.includes('tea')) this.src='https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80';
-                   else if(cat.includes('dessert') || cat.includes('cake')) this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=80';
-                   else this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80';
-                   this.onerror=null;
-                 "
+            {% set cat_clean = item.category | lower %}
+            {% if 'pizza' in cat_clean %}
+                {% set default_img = 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=500&auto=format&fit=crop&q=80' %}
+            {% elif 'burger' in cat_clean %}
+                {% set default_img = 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&auto=format&fit=crop&q=80' %}
+            {% elif 'coffee' in cat_clean or 'beverage' in cat_clean or 'tea' in cat_clean %}
+                {% set default_img = 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=500&auto=format&fit=crop&q=80' %}
+            {% elif 'dessert' in cat_clean or 'cake' in cat_clean %}
+                {% set default_img = 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=80' %}
+            {% else %}
+                {% set default_img = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=80' %}
+            {% endif %}
+
+            <img src="{{ url_for('uploaded_file', filename=item.image) if (item.image and item.image != 'default.jpg' and item.image != '') else default_img }}"
+                 onerror="this.onerror=null; this.src='{{ default_img }}';"
                  alt="{{ item.name }}" class="menu-img" loading="lazy">
             <span class="menu-cat-badge">{{ item.category }}</span>
             {% if item.is_featured %}<span class="featured-badge">⭐ Featured</span>{% endif %}
