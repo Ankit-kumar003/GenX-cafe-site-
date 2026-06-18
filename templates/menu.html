@@ -14,7 +14,6 @@
 
 <section class="section-pad">
   <div class="container">
-    <!-- Search & Filter -->
     <form method="GET" class="menu-filter-bar mb-4">
       <div class="row g-2 align-items-center">
         <div class="col-md-5">
@@ -37,7 +36,6 @@
       </div>
     </form>
 
-    <!-- Menu Grid -->
     {% if items %}
     <div class="row g-4" id="menuGrid">
       {% for item in items %}
@@ -45,6 +43,7 @@
         <div class="menu-card h-100">
           <div class="menu-img-wrap">
             <img src="{{ url_for('uploaded_file', filename=item.image) if item.image != 'default.jpg' else url_for('static', filename='images/default-food.jpg') }}"
+                 onerror="this.onerror=null; this.src='https://loremflickr.com/500/400/{{ item.category | lower | replace(' ', ',') }},{{ item.name | lower | replace(' ', ',') }},food/all';"
                  alt="{{ item.name }}" class="menu-img" loading="lazy">
             <span class="menu-cat-badge">{{ item.category }}</span>
             {% if item.is_featured %}<span class="featured-badge">⭐ Featured</span>{% endif %}

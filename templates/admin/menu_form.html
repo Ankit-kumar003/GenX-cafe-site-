@@ -34,7 +34,9 @@
             <label class="form-label">Image</label>
             {% if item and item.image != 'default.jpg' %}
             <div class="mb-2">
-              <img src="{{ url_for('uploaded_file', filename=item.image) }}" class="admin-thumb-lg" alt="Current image">
+              <img src="{{ url_for('uploaded_file', filename=item.image) }}" 
+                   onerror="this.onerror=null; this.src='https://loremflickr.com/300/200/{{ item.category | lower | replace(' ', ',') }},{{ item.name | lower | replace(' ', ',') }},food/all';"
+                   class="admin-thumb-lg" alt="Current image">
               <small class="d-block text-muted mt-1">Current image. Upload new to replace.</small>
             </div>
             {% endif %}
