@@ -3,6 +3,7 @@ from models.db import query
 from groq import Groq
 from flask import current_app
 import uuid
+import os # SYSTEM FIX: Imported os to read render environment variables directly
 
 chatbot = Blueprint('chatbot', __name__)
 
@@ -43,15 +44,22 @@ def chat():
     messages = [{'role': h['role'], 'content': h['message']} for h in history]
 
     try:
-        client = Groq(api_key=current_app.config['GROQ_API_KEY'])
+        # SYSTEM FIX: Directly checking os.environ so Render keys are read instantly
+        # Also added a solid model fallback 'llama3-8b-8192' if config model is missing
+        api_key = os.environ.get('GROQ_API_KEY') or current_app.config.get('GROQ_API_KEY')
+        model_name = os.environ.get('GROQ_MODEL') or current_app.config.get('GROQ_MODEL') or 'llama3-8b-8192'
+        
+        client = Groq(api_key=api_key)
         response = client.chat.completions.create(
-            model=current_app.config['GROQ_MODEL'],
+            model=model_name,
             messages=[{'role': 'system', 'content': SYSTEM_PROMPT}] + messages,
             max_tokens=200,
             temperature=0.7
         )
         reply = response.choices[0].message.content
     except Exception as e:
+        # Debugging ke liye aap local/render logs me error dekh sakein
+        print("Chatbot Error:", str(e))
         reply = "Sorry, I'm having a moment! ☕ Please try again or contact us directly."
 
     # Store bot reply
