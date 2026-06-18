@@ -16,7 +16,7 @@
         {% for item in items %}
         <tr>
           <td>
-            <img src="{{ url_for('uploaded_file', filename=item.image) if item.image != 'default.jpg' else url_for('static', filename='images/default-food.jpg') }}"
+            <img src="{{ url_for('uploaded_file', filename=item.image) if item.image else url_for('static', filename='images/default-food.jpg') }}"
                  onerror="
                    let cat = '{{ item.category | lower }}';
                    if(cat.includes('pizza')) this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?w=150&auto=format&fit=crop&q=80';

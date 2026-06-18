@@ -32,9 +32,9 @@
           </div>
           <div class="col-12">
             <label class="form-label">Image</label>
-            {% if item and item.image != 'default.jpg' %}
+            {% if item %}
             <div class="mb-2">
-              <img src="{{ url_for('uploaded_file', filename=item.image) }}" 
+              <img src="{{ url_for('uploaded_file', filename=item.image) if item.image else url_for('static', filename='images/default-food.jpg') }}" 
                    onerror="
                      let cat = '{{ item.category | lower }}';
                      if(cat.includes('pizza')) this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&auto=format&fit=crop&q=80';
