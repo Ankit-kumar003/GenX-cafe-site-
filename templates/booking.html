@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}Reserve a Table – Gen X Cafe{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container text-center">
+    <h1 class="page-hero-title">Reserve a Table</h1>
+    <p>Book your spot and we'll have everything ready for you</p>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb justify-content-center">
+      <li class="breadcrumb-item"><a href="{{ url_for('public.home') }}">Home</a></li>
+      <li class="breadcrumb-item active">Reserve</li>
+    </ol></nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-7">
+        <div class="booking-card">
+          <h3 class="mb-4">Make a Reservation</h3>
+          <form method="POST" action="{{ url_for('public.booking') }}" id="bookingForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() if csrf_token is defined else '' }}">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" name="name" class="form-control" placeholder="Your name" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone *</label>
+                <input type="tel" name="phone" class="form-control" placeholder="+91 98765 43210" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email *</label>
+                <input type="email" name="email" class="form-control" placeholder="your@email.com" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Number of Guests *</label>
+                <select name="guests" class="form-select" required>
+                  {% for i in range(1, 13) %}
+                  <option value="{{ i }}">{{ i }} Guest{{ 's' if i > 1 else '' }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Date *</label>
+                <input type="date" name="date" id="bookDate" class="form-control" required
+                       min="{{ now().strftime('%Y-%m-%d') if now is defined else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Time *</label>
+                <select name="time" id="bookTime" class="form-select" required>
+                  <option value="">Select time</option>
+                  {% set times = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00','21:30','22:00','22:30'] %}
+                  {% for t in times %}
+                  <option value="{{ t }}">{{ t }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Special Requests</label>
+                <textarea name="special_request" class="form-control" rows="3" placeholder="Dietary requirements, celebrations, seating preferences..."></textarea>
+              </div>
+              <div class="col-12">
+                <div id="availabilityMsg" class="alert d-none"></div>
+                <button type="submit" class="btn btn-primary w-100 btn-lg" id="submitBtn">
+                  <i class="bi bi-calendar-check"></i> Confirm Reservation
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="booking-info-card">
+          <h5><i class="bi bi-info-circle text-primary"></i> Booking Info</h5>
+          <ul class="booking-info-list">
+            <li><i class="bi bi-clock"></i> Reservations held for 15 mins</li>
+            <li><i class="bi bi-people"></i> Groups over 12 — call us directly</li>
+            <li><i class="bi bi-telephone"></i> +91 98765 43210</li>
+            <li><i class="bi bi-geo-alt"></i> 42 MG Road, Jaipur</li>
+            <li><i class="bi bi-calendar3"></i> Open 7AM – 11PM Daily</li>
+          </ul>
+        </div>
+        <div class="booking-map mt-4">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3557.3!2d75.7873!3d26.9124!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2sMG+Road+Jaipur!5e0!3m2!1sen!2sin!4v1609459200000!5m2!1sen!2sin"
+            width="100%" height="220" style="border:0;border-radius:12px;" allowfullscreen loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block extra_js %}
+<script>
+const dateInput = document.getElementById('bookDate');
+const timeInput = document.getElementById('bookTime');
+const msg = document.getElementById('availabilityMsg');
+
+const today = new Date().toISOString().split('T')[0];
+dateInput.min = today;
+
+async function checkAvailability() {
+  const date = dateInput.value;
+  const time = timeInput.value;
+  if (!date || !time) return;
+  msg.className = 'alert alert-info';
+  msg.textContent = 'Checking availability...';
+  msg.classList.remove('d-none');
+  try {
+    const res = await fetch(`/api/check-availability?date=${date}&time=${time}`);
+    const data = await res.json();
+    if (data.available) {
+      msg.className = 'alert alert-success';
+      msg.innerHTML = '<i class="bi bi-check-circle"></i> This slot is available!';
+    } else {
+      msg.className = 'alert alert-warning';
+      msg.innerHTML = '<i class="bi bi-exclamation-triangle"></i> This slot is taken. Please choose another time.';
+    }
+  } catch {
+    msg.className = 'alert alert-secondary';
+    msg.textContent = 'Could not check availability.';
+  }
+}
+
+dateInput.addEventListener('change', checkAvailability);
+timeInput.addEventListener('change', checkAvailability);
+</script>
+{% endblock %}

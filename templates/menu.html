@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Menu – Gen X Cafe{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container text-center">
+    <h1 class="page-hero-title">Our Menu</h1>
+    <p>From first sip to last bite — crafted with love</p>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb justify-content-center">
+      <li class="breadcrumb-item"><a href="{{ url_for('public.home') }}">Home</a></li>
+      <li class="breadcrumb-item active">Menu</li>
+    </ol></nav>
+  </div>
+</section>
+
+<section class="section-pad">
+  <div class="container">
+    <!-- Search & Filter -->
+    <form method="GET" class="menu-filter-bar mb-4">
+      <div class="row g-2 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" name="search" class="form-control" placeholder="Search menu..." value="{{ search }}">
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="category-pills">
+            <a href="{{ url_for('public.menu') }}" class="cat-pill {% if not active_cat %}active{% endif %}">All</a>
+            {% for cat in categories %}
+            <a href="?category={{ cat }}" class="cat-pill {% if active_cat == cat %}active{% endif %}">{{ cat }}</a>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="col-md-2">
+          <button type="submit" class="btn btn-primary w-100">Search</button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Menu Grid -->
+    {% if items %}
+    <div class="row g-4" id="menuGrid">
+      {% for item in items %}
+      <div class="col-lg-3 col-md-4 col-sm-6 menu-item-col" data-category="{{ item.category }}">
+        <div class="menu-card h-100">
+          <div class="menu-img-wrap">
+            <img src="{{ url_for('uploaded_file', filename=item.image) if item.image != 'default.jpg' else url_for('static', filename='images/default-food.jpg') }}"
+                 alt="{{ item.name }}" class="menu-img" loading="lazy">
+            <span class="menu-cat-badge">{{ item.category }}</span>
+            {% if item.is_featured %}<span class="featured-badge">⭐ Featured</span>{% endif %}
+          </div>
+          <div class="menu-body">
+            <h6 class="menu-name">{{ item.name }}</h6>
+            <p class="menu-desc small">{{ item.description }}</p>
+            <div class="menu-footer">
+              <span class="menu-price">₹{{ "%.0f"|format(item.price) }}</span>
+              <a href="{{ url_for('public.booking') }}" class="btn btn-sm btn-primary">Reserve</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-search fs-1 text-muted"></i>
+      <h4 class="mt-3">No items found</h4>
+      <a href="{{ url_for('public.menu') }}" class="btn btn-outline-primary mt-2">Clear Search</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

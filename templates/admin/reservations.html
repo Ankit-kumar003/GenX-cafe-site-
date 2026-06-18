@@ -1,0 +1,61 @@
+{% extends 'admin/base.html' %}
+{% block title %}Reservations – Admin{% endblock %}
+{% block page_title %}Reservations{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="admin-card-header d-flex justify-content-between align-items-center">
+    <h6>All Reservations ({{ items|length }})</h6>
+    <input type="text" id="resSearch" class="form-control form-control-sm w-auto" placeholder="Search...">
+  </div>
+  <div class="table-responsive">
+    <table class="table admin-table" id="resTable">
+      <thead><tr>
+        <th>#</th><th>Guest</th><th>Contact</th><th>Date</th><th>Time</th><th>Guests</th><th>Special</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        {% for r in items %}
+        <tr>
+          <td>{{ r.id }}</td>
+          <td><strong>{{ r.name }}</strong></td>
+          <td><small>{{ r.email }}<br>{{ r.phone }}</small></td>
+          <td>{{ r.date }}</td>
+          <td>{{ r.time }}</td>
+          <td>{{ r.guests }}</td>
+          <td><small>{{ r.special_request or '—' }}</small></td>
+          <td>
+            <span class="badge {% if r.status == 'confirmed' %}bg-success{% elif r.status == 'cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+              {{ r.status|title }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-1 flex-wrap">
+              <form method="POST" action="{{ url_for('admin.reservation_update', id=r.id) }}" class="d-inline">
+                <input type="hidden" name="status" value="confirmed">
+                <button class="btn btn-xs btn-success" title="Confirm"><i class="bi bi-check"></i></button>
+              </form>
+              <form method="POST" action="{{ url_for('admin.reservation_update', id=r.id) }}" class="d-inline">
+                <input type="hidden" name="status" value="cancelled">
+                <button class="btn btn-xs btn-warning" title="Cancel"><i class="bi bi-x"></i></button>
+              </form>
+              <form method="POST" action="{{ url_for('admin.reservation_delete', id=r.id) }}" class="d-inline" onsubmit="return confirm('Delete?')">
+                <button class="btn btn-xs btn-danger"><i class="bi bi-trash"></i></button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('resSearch').addEventListener('input', function() {
+  const val = this.value.toLowerCase();
+  document.querySelectorAll('#resTable tbody tr').forEach(row => {
+    row.style.display = row.textContent.toLowerCase().includes(val) ? '' : 'none';
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}Gen X Cafe – Where Every Sip Tells a Story{% endblock %}
+{% block content %}
+
+<!-- Hero -->
+<section class="hero-section">
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="container hero-content text-center">
+    <span class="hero-badge">Est. 2024 · Jaipur's Premium Cafe</span>
+    <h1 class="hero-title">Where Every Sip<br><span class="accent-italic">Tells a Story</span></h1>
+    <p class="hero-sub">Artisan coffee, gourmet food, and a vibe that feels like home.</p>
+    <div class="hero-ctas">
+      <a href="{{ url_for('public.menu') }}" class="btn btn-primary btn-lg">Explore Menu</a>
+      <a href="{{ url_for('public.booking') }}" class="btn btn-outline-light btn-lg">Reserve a Table</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Menu Items</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Rating</span></div>
+      <div class="stat"><span class="stat-num">5K+</span><span class="stat-label">Happy Guests</span></div>
+    </div>
+  </div>
+  <div class="hero-scroll"><i class="bi bi-chevron-double-down"></i></div>
+</section>
+
+<!-- Offers Strip -->
+<section class="offers-strip">
+  <div class="container">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="offer-card">
+          <i class="bi bi-cup-hot offer-icon"></i>
+          <div><strong>Happy Hours</strong><br><small>20% off all coffee 3PM–5PM</small></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="offer-card">
+          <i class="bi bi-gift offer-icon"></i>
+          <div><strong>Weekend Brunch</strong><br><small>Free dessert with any brunch order</small></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="offer-card">
+          <i class="bi bi-people offer-icon"></i>
+          <div><strong>Group Booking</strong><br><small>Special rates for 10+ guests</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Dishes -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-label">Our Bestsellers</span>
+      <h2 class="section-title">Featured Menu</h2>
+      <p class="section-sub">Handpicked by our baristas and chefs</p>
+    </div>
+    <div class="row g-4">
+      {% for item in featured %}
+      <div class="col-lg-4 col-md-6">
+        <div class="menu-card">
+          <div class="menu-img-wrap">
+            <img src="{{ url_for('uploaded_file', filename=item.image) if item.image != 'default.jpg' else url_for('static', filename='images/default-food.jpg') }}"
+                 alt="{{ item.name }}" class="menu-img" loading="lazy">
+            <span class="menu-cat-badge">{{ item.category }}</span>
+          </div>
+          <div class="menu-body">
+            <h5 class="menu-name">{{ item.name }}</h5>
+            <p class="menu-desc">{{ item.description }}</p>
+            <div class="menu-footer">
+              <span class="menu-price">₹{{ "%.0f"|format(item.price) }}</span>
+              <a href="{{ url_for('public.menu') }}" class="btn btn-sm btn-outline-primary">Order Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+      <a href="{{ url_for('public.menu') }}" class="btn btn-primary">View Full Menu →</a>
+    </div>
+  </div>
+</section>
+
+<!-- About Snippet -->
+<section class="about-snippet">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6">
+        <div class="about-img-grid">
+          <img src="{{ url_for('static', filename='images/cafe1.jpg') }}" alt="Cafe interior" class="about-img-1">
+          <img src="{{ url_for('static', filename='images/cafe2.jpg') }}" alt="Coffee art" class="about-img-2">
+          <div class="about-badge-card"><span class="num">7</span><span class="lbl">Years of Passion</span></div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <span class="section-label">Our Story</span>
+        <h2 class="section-title">More Than Just a Cafe</h2>
+        <p>Gen X Cafe was born from a simple dream — to create a space where coffee lovers, food enthusiasts, and good conversations come together. Every cup we brew and every dish we plate carries the passion of our dedicated team.</p>
+        <ul class="story-list">
+          <li><i class="bi bi-check-circle-fill text-primary"></i> Sourced from single-origin farms</li>
+          <li><i class="bi bi-check-circle-fill text-primary"></i> Artisan baking done fresh daily</li>
+          <li><i class="bi bi-check-circle-fill text-primary"></i> Sustainable packaging &amp; practices</li>
+        </ul>
+        <a href="{{ url_for('public.about') }}" class="btn btn-outline-primary">Our Story →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="section-pad testimonials-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-label">What Guests Say</span>
+      <h2 class="section-title">Stories from Our Tables</h2>
+    </div>
+    <div class="row g-4">
+      {% set reviews = [
+        {'name':'Priya Sharma','role':'Food Blogger','text':'Gen X Cafe is hands-down Jaipur\'s best coffee spot. The Mocha is divine and the ambiance is Instagram-worthy!','rating':5,'avatar':'P'},
+        {'name':'Rahul Meena','role':'Software Engineer','text':'I work remotely from here twice a week. Great WiFi, great coffee, great vibes. What more could you want?','rating':5,'avatar':'R'},
+        {'name':'Ananya Joshi','role':'Student','text':'Celebrated my birthday here and the staff made it so special! The brownie with ice cream is a must-have.','rating':5,'avatar':'A'}
+      ] %}
+      {% for r in reviews %}
+      <div class="col-lg-4">
+        <div class="review-card">
+          <div class="review-stars">{% for i in range(r.rating) %}★{% endfor %}</div>
+          <p class="review-text">"{{ r.text }}"</p>
+          <div class="reviewer">
+            <div class="reviewer-avatar">{{ r.avatar }}</div>
+            <div><strong>{{ r.name }}</strong><br><small>{{ r.role }}</small></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container text-center">
+    <h2>Ready for an Unforgettable Experience?</h2>
+    <p>Book your table now and let us take care of the rest.</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('public.booking') }}" class="btn btn-primary btn-lg">Reserve a Table</a>
+      <a href="https://wa.me/919876543210" class="btn btn-success btn-lg"><i class="bi bi-whatsapp"></i> WhatsApp Us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

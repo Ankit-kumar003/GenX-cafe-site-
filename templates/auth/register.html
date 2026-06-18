@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Register – Gen X Cafe{% endblock %}
+{% block content %}
+<section class="auth-section">
+  <div class="container">
+    <div class="auth-card">
+      <div class="auth-logo">☕ Gen<span class="accent">X</span> Cafe</div>
+      <h4 class="auth-title">Create Account</h4>
+      <form method="POST" action="{{ url_for('auth.register') }}">
+        <div class="mb-3">
+          <label class="form-label">Full Name</label>
+          <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email Address</label>
+          <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-control" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 btn-lg">Register</button>
+      </form>
+      <p class="text-center mt-3"><a href="{{ url_for('auth.login') }}">Already have an account? Login</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}
