@@ -1,452 +1,63 @@
-# FULL GITHUB + DEPLOYMENT GUIDE (BEGINNER FRIENDLY)
+1. mkdir GenX-cafe-site
 
-# PART 1 — CREATE GITHUB REPOSITORY
+2. cd GenX-cafe-site
 
-## STEP 1 — Open GitHub
+3. uv init
 
-Go to:
+4. uv venv
 
-```txt
-https://github.com
-```
+5. .venv\Scripts\activate
 
-Login to your account.
+6. uv add flask
 
----
+7. uv add gunicorn
 
-## STEP 2 — Create New Repository
+8. uv add python-dotenv
 
-Click:
+9. uv add mysql-connector-python
 
-```txt
-+
-```
+10. git init
 
-↓
+11. git add .
 
-```txt
-New Repository
-```
+12. git commit -m "Initial Commit"
 
----
+13. git branch -M main
 
-## STEP 3 — Repository Details
+14. git remote add origin YOUR_GITHUB_REPO_URL
 
-### Repository Name
+15. git push -u origin main
 
-```txt
-GenX-cafe-site
-```
+16. Create .env
 
-### Visibility
-
-Choose:
-
-```txt
-Public
-```
-
-### DO NOT CHECK
-
-❌ Add README
-❌ Add .gitignore
-❌ Add License
-
-Then click:
-
-```txt
-Create Repository
-```
-
----
-
-# PART 2 — PUSH PROJECT FROM VS CODE
-
-## STEP 4 — Open VS Code Terminal
-
-Shortcut:
-
-```txt
-CTRL + `
-```
-
----
-
-## STEP 5 — Activate Virtual Environment
-
-### Windows
-
-```bash
-venv\Scripts\activate
-```
-
----
-
-## STEP 6 — Initialize Git
-
-```bash
-git init
-```
-
----
-
-## STEP 7 — Add All Files
-
-```bash
-git add .
-```
-
----
-
-## STEP 8 — First Commit
-
-```bash
-git commit -m "Initial Commit"
-```
-
----
-
-## STEP 9 — Main Branch
-
-```bash
-git branch -M main
-```
-
----
-
-## STEP 10 — Connect GitHub Repo
-
-```bash
-git remote add origin YOUR_REPO_LINK
-```
-
-Example:
-
-```bash
-git remote add origin https://github.com/rahul656676/GenX-cafe-site.git
-```
-
----
-
-## STEP 11 — Push Code
-
-```bash
-git push -u origin main
-```
-
----
-
-# 🔥 IMPORTANT FIXES
-
-## If "remote already exists"
-
-```bash
-git remote remove origin
-```
-
-Then re-add origin.
-
----
-
-## If "403 Permission Denied"
-
-Wrong GitHub account login.
-
-Fix:
-
-1. Open:
-
-   ```txt
-   Credential Manager
-   ```
-
-2. Remove GitHub credentials
-
-3. Push again
-
----
-
-## If GitHub blocks API Key
-
-Remove keys from code.
-
-Use:
-
-```python
-os.environ.get("GROQ_API_KEY")
-```
-
-Store keys inside `.env`
-
----
-
-# PART 3 — CREATE .gitignore
-
-Create:
-
-```txt
-.gitignore
-```
-
-Paste:
-
-```gitignore
-venv/
+17. Create .gitignore
+.venv/
 .env
 __pycache__/
-static/uploads/
 .vscode/
-*.pyc
-```
 
----
-
-# PART 4 — CREATE requirements.txt
-
-```bash
-pip freeze > requirements.txt
-```
-
----
-
-# PART 5 — CREATE Procfile
-
-Create file:
-
-```txt
-Procfile
-```
-
-Paste:
-
-```txt
+18. Create Procfile
 web: gunicorn app:app
-```
 
----
+# Deploy on Render
+19. Open Render
 
-# PART 6 — INSTALL GUNICORN
+20. Login with GitHub
 
-```bash
-pip install gunicorn
-```
+21. Click New → Web Service
 
-Then:
+22. Select GitHub Repository
 
-```bash
-pip freeze > requirements.txt
-```
+23. Build Command:
+    uv sync
 
----
+24. Start Command:
+    gunicorn app:app
 
-# PART 7 — CREATE MYSQL DATABASE
+25. Add Environment Variables
 
-## Local MySQL
+26. Click Create Web Service
 
-Open MySQL Workbench.
+27. Wait 2–5 minutes
 
-Run:
-
-```sql
-CREATE DATABASE genxcafe;
-```
-
----
-
-## Import schema.sql
-
-1. File
-2. Open SQL Script
-3. Select schema.sql
-4. Execute
-
----
-
-# PART 8 — CREATE AIVEN CLOUD DATABASE
-
-## STEP 1
-
-Open:
-
-```txt
-https://aiven.io
-```
-
----
-
-## STEP 2
-
-Login with Google/GitHub.
-
----
-
-## STEP 3
-
-Create Service →
-
-```txt
-MySQL
-```
-
----
-
-## STEP 4
-
-Choose Free Plan.
-
----
-
-## STEP 5
-
-Copy:
-
-* HOST
-* PORT
-* USERNAME
-* PASSWORD
-
----
-
-# PART 9 — CONNECT AIVEN TO PROJECT
-
-Create:
-
-```txt
-.env
-```
-
-Paste:
-
-```env
-SECRET_KEY=your_secret
-
-MYSQL_HOST=your_host
-MYSQL_USER=avnadmin
-MYSQL_PASSWORD=your_password
-MYSQL_DB=genxcafe
-
-GROQ_API_KEY=your_key
-```
-
----
-
-# PART 10 — DEPLOY ON RENDER
-
-## STEP 1
-
-Open:
-
-```txt
-https://render.com
-```
-
----
-
-## STEP 2
-
-Login with GitHub.
-
----
-
-## STEP 3
-
-Click:
-
-```txt
-New +
-```
-
-↓
-
-```txt
-Web Service
-```
-
----
-
-## STEP 4
-
-Connect GitHub repo.
-
----
-
-## STEP 5 — Configure
-
-### Name
-
-```txt
-genx-cafe
-```
-
-### Runtime
-
-```txt
-Python 3
-```
-
-### Build Command
-
-```txt
-pip install -r requirements.txt
-```
-
-### Start Command
-
-```txt
-gunicorn app:app
-```
-
----
-
-# PART 11 — ENV VARIABLES IN RENDER
-
-Add:
-
-```txt
-SECRET_KEY
-MYSQL_HOST
-MYSQL_USER
-MYSQL_PASSWORD
-MYSQL_DB
-GROQ_API_KEY
-```
-
----
-
-# PART 12 — DEPLOY
-
-Click:
-
-```txt
-Create Web Service
-```
-
-Wait 2–5 minutes.
-
----
-
-# PART 13 — LIVE WEBSITE
-
-Render will provide:
-
-```txt
-https://genx-cafe.onrender.com
-```
-
-Your AI Full Stack Cafe Project is now LIVE 🚀🔥
-
----
-
-# PART 14 — FUTURE PROJECT UPDATES
-
-Whenever you update code:
-
-```bash
-git add .
-
-git commit -m "updated"
-
-git push
-```
-
-Render auto redeploy karega ✅
+28. Your website is live 🚀
