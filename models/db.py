@@ -21,6 +21,12 @@ def get_db():
                 current_app.config.get('MYSQL_PORT', 3306)
             ),
 
+            connect_timeout=30,
+
+            charset='utf8mb4',
+
+            autocommit=False,
+
             cursorclass=MySQLdb.cursors.DictCursor
         )
 
