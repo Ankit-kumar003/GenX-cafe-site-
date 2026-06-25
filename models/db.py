@@ -1,11 +1,14 @@
 import MySQLdb
 import MySQLdb.cursors
 from flask import g, current_app
+import ssl
 
 
 def get_db():
 
     if 'db' not in g:
+
+        ssl_context = ssl.create_default_context()
 
         g.db = MySQLdb.connect(
 
@@ -20,6 +23,8 @@ def get_db():
             port=int(
                 current_app.config.get('MYSQL_PORT', 3306)
             ),
+
+            ssl_mode='REQUIRED',
 
             connect_timeout=30,
 
