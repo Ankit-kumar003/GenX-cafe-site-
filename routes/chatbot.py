@@ -37,8 +37,6 @@ def chat():
                 'reply': 'Please type something.'
             })
 
-        # SESSION CREATE
-
         if 'chat_session_id' not in session:
 
             session['chat_session_id'] = uuid.uuid4().hex
@@ -69,15 +67,16 @@ def chat():
 
         except Exception as db_error:
 
-            print("CHAT SAVE ERROR:", str(db_error))
+            print(
+                "CHAT SAVE ERROR:",
+                str(db_error)
+            )
 
         # GROQ CLIENT
 
         client = Groq(
             api_key=current_app.config['GROQ_API_KEY']
         )
-
-        # AI RESPONSE
 
         response = client.chat.completions.create(
 
@@ -127,7 +126,10 @@ def chat():
 
         except Exception as db_error:
 
-            print("BOT SAVE ERROR:", str(db_error))
+            print(
+                "BOT SAVE ERROR:",
+                str(db_error)
+            )
 
         return jsonify({
             'reply': reply
@@ -141,5 +143,5 @@ def chat():
         )
 
         return jsonify({
-            'reply': f'Sorry, chatbot is temporarily unavailable.'
+            'reply': 'Sorry, chatbot is temporarily unavailable.'
         })
