@@ -1,0 +1,22 @@
+# Python temporary files (Byte-compiled / optimized)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment (Python local packages)
+venv/
+ENV/
+env/
+.env
+
+# IDE / Editor environments
+.vscode/
+.idea/
+
+# OS generated files
+Thumbs.db
+Desktop.ini
+
+# App specific uploads (Optional: uploads ko local rakhne ke liye)
+static/uploads/*
+!static/uploads/.gitkeep

@@ -1,0 +1,63 @@
+1. mkdir GenX-cafe-site
+
+2. cd GenX-cafe-site
+
+3. uv init
+
+4. uv venv
+
+5. .venv\Scripts\activate
+
+6. uv add flask
+
+7. uv add gunicorn
+
+8. uv add python-dotenv
+
+9. uv add mysql-connector-python
+
+10. git init
+
+11. git add .
+
+12. git commit -m "Initial Commit"
+
+13. git branch -M main
+
+14. git remote add origin YOUR_GITHUB_REPO_URL
+
+15. git push -u origin main
+
+16. Create .env
+
+17. Create .gitignore
+.venv/
+.env
+__pycache__/
+.vscode/
+
+18. Create Procfile
+web: gunicorn app:app
+
+# Deploy on Render
+19. Open Render
+
+20. Login with GitHub
+
+21. Click New → Web Service
+
+22. Select GitHub Repository
+
+23. Build Command:
+    uv sync
+
+24. Start Command:
+    gunicorn app:app
+
+25. Add Environment Variables
+
+26. Click Create Web Service
+
+27. Wait 2–5 minutes
+
+28. Your website is live 🚀

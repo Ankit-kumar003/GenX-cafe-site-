@@ -1,0 +1,127 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard – Gen X Cafe Admin{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+
+<!-- Stat Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-blue">
+      <div class="stat-icon"><i class="bi bi-menu-button-wide"></i></div>
+      <div class="stat-info"><span class="stat-num">{{ stats.menu_count }}</span><span class="stat-lbl">Menu Items</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-green">
+      <div class="stat-icon"><i class="bi bi-calendar-check"></i></div>
+      <div class="stat-info"><span class="stat-num">{{ stats.reservations }}</span><span class="stat-lbl">Total Reservations</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-orange">
+      <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
+      <div class="stat-info"><span class="stat-num">{{ stats.pending }}</span><span class="stat-lbl">Pending</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6">
+    <div class="stat-card stat-red">
+      <div class="stat-icon"><i class="bi bi-envelope-exclamation"></i></div>
+      <div class="stat-info"><span class="stat-num">{{ stats.contacts }}</span><span class="stat-lbl">Unread Messages</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-4 mb-4">
+  <div class="col-lg-8">
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h6>Monthly Reservations ({{ 2024 }})</h6>
+      </div>
+      <canvas id="monthlyChart" height="100"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h6>Menu by Category</h6>
+      </div>
+      <canvas id="categoryChart" height="200"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Reservations -->
+<div class="admin-card">
+  <div class="admin-card-header d-flex justify-content-between align-items-center">
+    <h6>Recent Reservations</h6>
+    <a href="{{ url_for('admin.reservations') }}" class="btn btn-sm btn-outline-primary">View All</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead><tr>
+        <th>Name</th><th>Date</th><th>Time</th><th>Guests</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        {% for r in recent_reservations %}
+        <tr>
+          <td><strong>{{ r.name }}</strong><br><small class="text-muted">{{ r.email }}</small></td>
+          <td>{{ r.date }}</td>
+          <td>{{ r.time }}</td>
+          <td><span class="badge bg-secondary">{{ r.guests }}</span></td>
+          <td>
+            <span class="badge {% if r.status == 'confirmed' %}bg-success{% elif r.status == 'cancelled' %}bg-danger{% else %}bg-warning text-dark{% endif %}">
+              {{ r.status|title }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('admin.reservations') }}" class="btn btn-xs btn-outline-secondary">Manage</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_js %}
+<script>
+const monthlyData = {{ monthly_data | tojson }};
+const categoryData = {{ category_data | tojson }};
+
+// Monthly Chart
+const mLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const mValues = Array(12).fill(0);
+monthlyData.forEach(d => { mValues[d.month - 1] = d.count; });
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: mLabels,
+    datasets: [{
+      label: 'Reservations',
+      data: mValues,
+      backgroundColor: 'rgba(99,102,241,0.7)',
+      borderRadius: 6,
+      borderSkipped: false
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+});
+
+// Category Doughnut
+new Chart(document.getElementById('categoryChart'), {
+  type: 'doughnut',
+  data: {
+    labels: categoryData.map(d => d.category),
+    datasets: [{
+      data: categoryData.map(d => d.count),
+      backgroundColor: ['#6366f1','#f59e0b','#10b981','#ef4444','#3b82f6','#8b5cf6','#ec4899'],
+      borderWidth: 2
+    }]
+  },
+  options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+</script>
+{% endblock %}

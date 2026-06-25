@@ -1,0 +1,46 @@
+{% extends 'admin/base.html' %}
+{% block title %}Messages – Admin{% endblock %}
+{% block page_title %}Contact Messages{% endblock %}
+{% block content %}
+<div class="admin-card">
+  <div class="table-responsive">
+    <table class="table admin-table">
+      <thead><tr>
+        <th>#</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th>
+      </tr></thead>
+      <tbody>
+        {% for c in items %}
+        <tr class="{{ '' if c.is_read else 'table-unread' }}">
+          <td>{{ c.id }}</td>
+          <td><strong>{{ c.name }}</strong></td>
+          <td>{{ c.email }}</td>
+          <td>{{ c.subject or '—' }}</td>
+          <td><small>{{ c.message[:80] }}{% if c.message|length > 80 %}...{% endif %}</small></td>
+          <td><small>{{ c.created_at.strftime('%d %b %Y') if c.created_at else '' }}</small></td>
+          <td>
+            <span class="badge {% if c.is_read %}bg-secondary{% else %}bg-primary{% endif %}">
+              {{ 'Read' if c.is_read else 'New' }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-1">
+              {% if not c.is_read %}
+              <a href="{{ url_for('admin.contact_read', id=c.id) }}" class="btn btn-xs btn-outline-primary" title="Mark Read">
+                <i class="bi bi-check-all"></i>
+              </a>
+              {% endif %}
+              <a href="mailto:{{ c.email }}?subject=Re: {{ c.subject }}" class="btn btn-xs btn-outline-success" title="Reply">
+                <i class="bi bi-reply"></i>
+              </a>
+              <form method="POST" action="{{ url_for('admin.contact_delete', id=c.id) }}" onsubmit="return confirm('Delete?')">
+                <button class="btn btn-xs btn-outline-danger"><i class="bi bi-trash"></i></button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}About Us – Gen X Cafe{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container text-center">
+    <h1 class="page-hero-title">Our Story</h1>
+    <p>Born from passion, brewed with love</p>
+    <nav aria-label="breadcrumb"><ol class="breadcrumb justify-content-center">
+      <li class="breadcrumb-item"><a href="{{ url_for('public.home') }}">Home</a></li>
+      <li class="breadcrumb-item active">About</li>
+    </ol></nav>
+  </div>
+</section>
+
+<!-- Story -->
+<section class="section-pad">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <span class="section-label">Est. 2017</span>
+        <h2 class="section-title">A Cafe Born From a Dream</h2>
+        <p class="lead">It all started with a small espresso machine and a big dream in the heart of Jaipur.</p>
+        <p>Our founder, Arjun Kapoor, spent years travelling across Europe and South America learning the craft of specialty coffee. When he returned to Jaipur, he brought with him not just beans, but a philosophy: that every cup should be an experience worth remembering.</p>
+        <p>Today, Gen X Cafe stands as Jaipur's most beloved cafe destination — a place where creative professionals, families, and coffee connoisseurs all find their tribe.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-img-grid">
+          <img src="{{ url_for('static', filename='images/cafe1.jpg') }}" alt="Cafe interior" class="about-img-1">
+          <img src="{{ url_for('static', filename='images/cafe2.jpg') }}" alt="Coffee preparation" class="about-img-2">
+          <div class="about-badge-card"><span class="num">7+</span><span class="lbl">Years of Excellence</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="section-pad bg-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="mv-card">
+          <div class="mv-icon"><i class="bi bi-bullseye"></i></div>
+          <h4>Our Mission</h4>
+          <p>To serve exceptional coffee and food while creating a warm, inclusive space where every guest feels at home. We commit to quality ingredients, sustainable practices, and heartfelt hospitality in every interaction.</p>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="mv-card">
+          <div class="mv-icon"><i class="bi bi-eye"></i></div>
+          <h4>Our Vision</h4>
+          <p>To become Rajasthan's most trusted cafe brand — a place synonymous with quality, community, and culture. We envision a future where Gen X Cafe is the backdrop to life's most memorable moments.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="section-pad">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-label">Gallery</span>
+      <h2 class="section-title">Inside Gen X</h2>
+    </div>
+    <div class="gallery-grid">
+      {% set gallery = ['cafe1.jpg','cafe2.jpg','cafe3.jpg','cafe4.jpg','cafe5.jpg','cafe6.jpg'] %}
+      {% for img in gallery %}
+      <div class="gallery-item">
+        <img src="{{ url_for('static', filename='images/' + img) }}" alt="Cafe photo {{ loop.index }}" loading="lazy">
+        <div class="gallery-overlay"><i class="bi bi-zoom-in"></i></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Team -->
+<section class="section-pad bg-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-label">The Crew</span>
+      <h2 class="section-title">Meet Our Team</h2>
+      <p class="section-sub">The passionate people behind every perfect cup</p>
+    </div>
+    <div class="row g-4 justify-content-center">
+      {% set team = [
+        {'name':'Arjun Kapoor','role':'Founder & Head Barista','emoji':'☕'},
+        {'name':'Neha Singh','role':'Executive Chef','emoji':'👨‍🍳'},
+        {'name':'Ravi Sharma','role':'Cafe Manager','emoji':'🎯'},
+        {'name':'Priti Jain','role':'Pastry Chef','emoji':'🍰'}
+      ] %}
+      {% for member in team %}
+      <div class="col-lg-3 col-md-6">
+        <div class="team-card">
+          <div class="team-avatar">{{ member.emoji }}</div>
+          <h5 class="team-name">{{ member.name }}</h5>
+          <p class="team-role">{{ member.role }}</p>
+          <div class="team-social">
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- Stats -->
+<section class="stats-section">
+  <div class="container">
+    <div class="row g-4 text-center">
+      {% set stats = [('5,000+','Happy Customers'),('50+','Menu Items'),('7+','Years Experience'),('4.9★','Google Rating')] %}
+      {% for num, label in stats %}
+      <div class="col-6 col-md-3">
+        <div class="stat-big"><span class="stat-big-num">{{ num }}</span><span class="stat-big-label">{{ label }}</span></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

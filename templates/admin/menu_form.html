@@ -1,0 +1,78 @@
+{% extends 'admin/base.html' %}
+{% block title %}{{ 'Edit' if item else 'Add' }} Menu Item – Admin{% endblock %}
+{% block page_title %}{{ 'Edit' if item else 'Add' }} Menu Item{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h6>{{ 'Edit: ' + item.name if item else 'New Menu Item' }}</h6>
+      </div>
+      <form method="POST" enctype="multipart/form-data">
+        <div class="row g-3 p-4">
+          <div class="col-md-8">
+            <label class="form-label">Item Name *</label>
+            <input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Price (₹) *</label>
+            <input type="number" name="price" class="form-control" step="0.01" value="{{ item.price if item else '' }}" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Category *</label>
+            <select name="category" class="form-select" required>
+              {% for cat in categories %}
+              <option value="{{ cat }}" {% if item and item.category == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea name="description" class="form-control" rows="3">{{ item.description if item else '' }}</textarea>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Image</label>
+            {% if item %}
+            <div class="mb-2">
+              <img src="{{ url_for('uploaded_file', filename=item.image) if item.image else url_for('static', filename='images/default-food.jpg') }}" 
+                   onerror="
+                     let cat = '{{ item.category | lower }}';
+                     if(cat.includes('pizza')) this.src='https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300&auto=format&fit=crop&q=80';
+                     else if(cat.includes('burger')) this.src='https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300&auto=format&fit=crop&q=80';
+                     else if(cat.includes('coffee') || cat.includes('beverage') || cat.includes('tea')) this.src='https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=300&auto=format&fit=crop&q=80';
+                     else if(cat.includes('dessert') || cat.includes('cake')) this.src='https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&auto=format&fit=crop&q=80';
+                     else this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=300&auto=format&fit=crop&q=80';
+                     this.onerror=null;
+                   "
+                   class="admin-thumb-lg" alt="Current image">
+              <small class="d-block text-muted mt-1">Current image. Upload new to replace.</small>
+            </div>
+            {% endif %}
+            <input type="file" name="image" class="form-control" accept="image/*">
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="is_featured" id="featuredCheck"
+                     {% if item and item.is_featured %}checked{% endif %}>
+              <label class="form-check-label" for="featuredCheck">Featured on Homepage</label>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="is_available" id="availCheck"
+                     {% if not item or item.is_available %}checked{% endif %}>
+              <label class="form-check-label" for="availCheck">Available</label>
+            </div>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg"></i> {{ 'Update Item' if item else 'Add Item' }}
+            </button>
+            <a href="{{ url_for('admin.menu') }}" class="btn btn-outline-secondary">Cancel</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
