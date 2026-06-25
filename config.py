@@ -22,5 +22,9 @@ class Config:
     UPLOAD_FOLDER = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'static/uploads')
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
     WTF_CSRF_ENABLED = True
+<<<<<<< HEAD
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
     print("MYSQL PASSWORD:", os.environ.get("MYSQL_PASSWORD"))
+=======
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+>>>>>>> ee502b266f23d8c41c8780c8fc03b1f415f79d0f
