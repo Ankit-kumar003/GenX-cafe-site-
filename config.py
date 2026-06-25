@@ -1,7 +1,8 @@
-import os
+\import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 class Config:
 
@@ -12,32 +13,32 @@ class Config:
 
     MYSQL_HOST = os.environ.get(
         'MYSQL_HOST',
-        ''
-    ).strip()
+        'mysql-98e4b7a-jangirrahul0026-386c.i.aivencloud.com'
+    )
 
     MYSQL_PORT = int(
-        os.environ.get('MYSQL_PORT', 3306)
+        os.environ.get('MYSQL_PORT', 24240)
     )
 
     MYSQL_USER = os.environ.get(
         'MYSQL_USER',
-        ''
-    ).strip()
+        'avnadmin'
+    )
 
     MYSQL_PASSWORD = os.environ.get(
         'MYSQL_PASSWORD',
         ''
-    ).strip()
+    )
 
     MYSQL_DB = os.environ.get(
         'MYSQL_DB',
-        ''
-    ).strip()
+        'defaultdb'
+    )
 
     GROQ_API_KEY = os.environ.get(
         'GROQ_API_KEY',
         ''
-    ).strip()
+    )
 
     GROQ_MODEL = "llama-3.3-70b-versatile"
 
@@ -47,8 +48,6 @@ class Config:
     )
 
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024
-
-    WTF_CSRF_ENABLED = True
 
     ALLOWED_EXTENSIONS = {
         'png',

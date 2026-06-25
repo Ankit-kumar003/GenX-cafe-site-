@@ -1,5 +1,6 @@
 import MySQLdb
 import MySQLdb.cursors
+
 from flask import g, current_app
 
 
@@ -18,14 +19,17 @@ def get_db():
             db=current_app.config['MYSQL_DB'],
 
             port=int(
-                current_app.config.get('MYSQL_PORT', 3306)
+                current_app.config.get(
+                    'MYSQL_PORT',
+                    3306
+                )
             ),
 
-            cursorclass=MySQLdb.cursors.DictCursor,
+            ssl_mode='REQUIRED',
 
-            connect_timeout=10,
+            connect_timeout=15,
 
-            ssl_mode='REQUIRED'
+            cursorclass=MySQLdb.cursors.DictCursor
         )
 
     return g.db
