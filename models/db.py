@@ -1,38 +1,36 @@
-import MySQLdb
-import MySQLdb.cursors
+import pymysql
+import pymysql.cursors
 from flask import g, current_app
-import ssl
+
+pymysql.install_as_MySQLdb()
 
 
 def get_db():
 
     if 'db' not in g:
 
-        ssl_context = ssl.create_default_context()
-
-        g.db = MySQLdb.connect(
+        g.db = pymysql.connect(
 
             host=current_app.config['MYSQL_HOST'],
 
             user=current_app.config['MYSQL_USER'],
 
-            passwd=current_app.config['MYSQL_PASSWORD'],
+            password=current_app.config['MYSQL_PASSWORD'],
 
-            db=current_app.config['MYSQL_DB'],
+            database=current_app.config['MYSQL_DB'],
 
             port=int(
                 current_app.config.get('MYSQL_PORT', 3306)
             ),
 
-            ssl_mode='REQUIRED',
+            connect_timeout=60,
 
-            connect_timeout=30,
+            cursorclass=pymysql.cursors.DictCursor,
 
-            charset='utf8mb4',
+            ssl={
+                "ssl": {}
+            }
 
-            autocommit=False,
-
-            cursorclass=MySQLdb.cursors.DictCursor
         )
 
     return g.db
