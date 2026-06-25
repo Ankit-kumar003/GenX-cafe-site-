@@ -2,8 +2,6 @@ from flask import Blueprint, request, jsonify, session, current_app
 from models.db import query
 from groq import Groq
 import uuid
-import traceback
-import os # SYSTEM FIX: Imported os to read direct Render environment variables
 
 chatbot = Blueprint('chatbot', __name__)
 
@@ -20,88 +18,128 @@ You help users with:
 Keep replies short, friendly and helpful.
 """
 
+
 @chatbot.route('/api/chat', methods=['POST'])
 def chat():
+
     try:
+
         data = request.get_json()
-        user_message = data.get('message', '').strip()
+
+        user_message = data.get(
+            'message',
+            ''
+        ).strip()
 
         if not user_message:
+
             return jsonify({
                 'reply': 'Please type something.'
             })
 
-        # CREATE SESSION
+        # SESSION CREATE
+
         if 'chat_session_id' not in session:
+
             session['chat_session_id'] = uuid.uuid4().hex
 
         session_id = session['chat_session_id']
 
-        # SAVE USER MESSAGE (Wrapped inside a safe try-except block so DB sleep doesn't crash the bot)
+        # SAVE USER MESSAGE
+
         try:
+
             query(
                 """
                 INSERT INTO chatbot_history
-                (session_id, role, message)
+                (
+                    session_id,
+                    role,
+                    message
+                )
                 VALUES (%s,%s,%s)
                 """,
-                (session_id, 'user', user_message),
+                (
+                    session_id,
+                    'user',
+                    user_message
+                ),
                 commit=True
             )
-        except Exception as db_err:
-            print("Chatbot DB Log Error (User):", str(db_err))
 
-        # CREATE GROQ CLIENT
-        # SYSTEM FIX: Fallback applied to read directly from OS Environment if Flask Config feels empty on Render
-        api_key = os.environ.get('GROQ_API_KEY') or current_app.config.get('GROQ_API_KEY', '')
+        except Exception as db_error:
 
-        if not api_key:
-            return jsonify({
-                'reply': "Sorry, my API Key is missing on Render configuration! ☕"
-            })
+            print("CHAT SAVE ERROR:", str(db_error))
 
-        client = Groq(api_key=api_key)
+        # GROQ CLIENT
+
+        client = Groq(
+            api_key=current_app.config['GROQ_API_KEY']
+        )
 
         # AI RESPONSE
+
         response = client.chat.completions.create(
+
             model="llama-3.3-70b-versatile",
+
             messages=[
+
                 {
                     "role": "system",
                     "content": SYSTEM_PROMPT
                 },
+
                 {
                     "role": "user",
                     "content": user_message
                 }
+
             ],
+
             temperature=0.7,
             max_tokens=200
         )
 
         reply = response.choices[0].message.content
 
-        # SAVE BOT RESPONSE
+        # SAVE BOT MESSAGE
+
         try:
+
             query(
                 """
                 INSERT INTO chatbot_history
-                (session_id, role, message)
+                (
+                    session_id,
+                    role,
+                    message
+                )
                 VALUES (%s,%s,%s)
                 """,
-                (session_id, 'assistant', reply),
+                (
+                    session_id,
+                    'assistant',
+                    reply
+                ),
                 commit=True
             )
-        except Exception as db_err:
-            print("Chatbot DB Log Error (Bot):", str(db_err))
+
+        except Exception as db_error:
+
+            print("BOT SAVE ERROR:", str(db_error))
 
         return jsonify({
             'reply': reply
         })
 
     except Exception as e:
-        traceback.print_exc()
-        print("CHATBOT ERROR:", str(e))
+
+        print(
+            "CHATBOT ERROR:",
+            str(e)
+        )
+
         return jsonify({
-            'reply': f"Sorry, I'm having a moment! ☕ (Error: {str(e)})"
+            'reply': f'Sorry, chatbot is temporarily unavailable.'
         })
